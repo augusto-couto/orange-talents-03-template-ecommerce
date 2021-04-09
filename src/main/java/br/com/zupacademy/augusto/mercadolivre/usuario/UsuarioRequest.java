@@ -5,9 +5,13 @@ import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
 
+import br.com.zupacademy.augusto.mercadolivre.annotation.ValorUnico;
+
 public class UsuarioRequest {
+	
 	@NotBlank
 	@Email
+	@ValorUnico(field = "login", clazz = Usuario.class)
 	private String login;
 	@NotBlank
 	@Length(min = 6)
