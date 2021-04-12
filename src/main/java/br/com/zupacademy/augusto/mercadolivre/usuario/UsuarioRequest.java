@@ -4,6 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import br.com.zupacademy.augusto.mercadolivre.annotation.ValorUnico;
 
@@ -26,5 +27,9 @@ public class UsuarioRequest {
 	
 	public Usuario converte() {
 		return new Usuario(this.login, this.senha);
+	}
+
+	public UsernamePasswordAuthenticationToken convertToToken() {
+		return new UsernamePasswordAuthenticationToken(login, senha);
 	}
 }
