@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.util.Assert;
+
 @Entity
 public class Categoria {
 	
@@ -26,6 +28,7 @@ public class Categoria {
 	public Categoria(@NotBlank String nome) {
 		super();
 		this.nome = nome;
+		Assert.hasText(this.nome, "Nome não pode ser nulo e deve conter ao menos um caractere que não seja espaço em branco!");
 	}
 
 	public Categoria getCategoriaMae() {
