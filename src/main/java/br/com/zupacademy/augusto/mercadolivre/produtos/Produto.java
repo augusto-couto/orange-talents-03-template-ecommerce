@@ -25,6 +25,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
 
 import br.com.zupacademy.augusto.mercadolivre.categoria.Categoria;
+import br.com.zupacademy.augusto.mercadolivre.usuario.Usuario;
 
 @Entity
 public class Produto {
@@ -53,6 +54,13 @@ public class Produto {
 	@NotNull
 	private LocalDateTime instanteCadastro = LocalDateTime.now();
 	
+	@OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+	private Set<ImagemProduto> imagens = new HashSet<>();
+	
+	@NotNull
+	@ManyToOne
+	private Usuario dono;
+	
 	@Deprecated
 	public Produto() {
 		super();
@@ -60,7 +68,7 @@ public class Produto {
 
 	public Produto(@NotBlank String nome, @NotNull @Positive BigDecimal valor,
 			@PositiveOrZero Integer quantidadeDisponivel, @NotBlank @Length(max = 1000) String descricao,
-			@NotNull Categoria categoria, @Size(min = 3) Set<CaracteristicaProdutoRequest> caracteristicas) {
+			@NotNull Categoria categoria, @Size(min = 3) Set<CaracteristicaProdutoRequest> caracteristicas, @NotNull Usuario dono) {
 		super();
 		this.nome = nome;
 		this.valor = valor;
@@ -70,6 +78,7 @@ public class Produto {
 		this.caracteristicas.addAll(caracteristicas
 				.stream().map(caracteristica -> caracteristica.converte(this))
 				.collect(Collectors.toSet()));
+		this.dono = dono;
 		
 		Assert.hasText(this.nome, "Nome não pode ser nulo e deve conter ao menos um caractere que não seja espaço em branco!");
 		Assert.isTrue(this.valor.doubleValue() > 0, "Valor precisa ser maior que zero");
@@ -113,6 +122,14 @@ public class Produto {
 		return caracteristicas;
 	}
 
+	public Set<ImagemProduto> getImagens() {
+		return imagens;
+	}
+
+	public Usuario getDono() {
+		return dono;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -136,5 +153,16 @@ public class Produto {
 		} else if (!nome.equals(other.nome))
 			return false;
 		return true;
+	}
+
+	public void setImagens(Set<String> links) {
+		Set<ImagemProduto> imagens = links.stream().map(link -> 
+		new ImagemProduto(this, link))
+		.collect(Collectors.toSet());
+		this.imagens.addAll(imagens);
+	}
+
+	public boolean belongToUser(Usuario possivelDono) {
+		return this.dono.equals(possivelDono) ;
 	}
 }

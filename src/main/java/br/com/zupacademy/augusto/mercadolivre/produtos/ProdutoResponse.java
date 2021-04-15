@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import br.com.zupacademy.augusto.mercadolivre.categoria.Categoria;
+import br.com.zupacademy.augusto.mercadolivre.usuario.Usuario;
 
 public class ProdutoResponse {
 	
@@ -17,6 +18,7 @@ public class ProdutoResponse {
 	private Categoria categoria;
 	private Set<CaracteristicaProduto> caracteristicas = new HashSet<>();
 	private LocalDateTime instanteCadastro;
+	private Usuario dono;
 	
 	public ProdutoResponse(Produto produto) {
 		super();
@@ -28,6 +30,7 @@ public class ProdutoResponse {
 		this.categoria = produto.getCategoria();
 		this.instanteCadastro = produto.getInstanteCadastro();
 		this.caracteristicas.addAll(produto.getCaracteristicas());
+		this.dono = produto.getDono();
 	
 	}
 
@@ -61,5 +64,9 @@ public class ProdutoResponse {
 
 	public Set<CaracteristicaProduto> getCaracteristicas() {
 		return caracteristicas;
+	}
+
+	public Usuario getDono() {
+		return dono;
 	}
 }

@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
 
 import br.com.zupacademy.augusto.mercadolivre.categoria.Categoria;
+import br.com.zupacademy.augusto.mercadolivre.usuario.Usuario;
 
 public class ProdutoRequest {
 	
@@ -43,10 +44,10 @@ public class ProdutoRequest {
 		this.caracteristicas.addAll(caracteristicas);
 	}
 
-	public Produto convert(EntityManager entityManager) {
+	public Produto convert(EntityManager entityManager, Usuario dono) {
 		Categoria categoria = entityManager.find(Categoria.class, categoriaId);
 		return new Produto(this.nome, this.valor, this.quantidadeDisponivel,
-				this.descricao, categoria, this.caracteristicas);
+				this.descricao, categoria, this.caracteristicas, dono);
 	}
 
 }

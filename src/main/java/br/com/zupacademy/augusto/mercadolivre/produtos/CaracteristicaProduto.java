@@ -24,6 +24,11 @@ public class CaracteristicaProduto {
 	@NotNull
 	private Produto produto;
 	
+	@Deprecated
+	public CaracteristicaProduto() {
+		super();
+	}
+
 	public CaracteristicaProduto(String nome, String descricao, Produto produto) {
 		super();
 		this.nome = nome;
