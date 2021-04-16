@@ -1,7 +1,6 @@
-package br.com.zupacademy.augusto.mercadolivre.opiniao;
+package br.com.zupacademy.augusto.mercadolivre.pergunta;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
@@ -17,27 +16,29 @@ import br.com.zupacademy.augusto.mercadolivre.produtos.Produto;
 import br.com.zupacademy.augusto.mercadolivre.usuario.Usuario;
 
 @RestController
-public class OpiniaoController {
+public class PerguntaController {
 	
 	private EntityManager entityManager;
 	private TokenManager tokenManager;
+	private Emails email;
 
-	public OpiniaoController(EntityManager entityManager, TokenManager tokenManager) {
+	public PerguntaController(EntityManager entityManager, TokenManager tokenManager, Emails email) {
 		super();
+		this.email = email;
 		this.entityManager = entityManager;
 		this.tokenManager = tokenManager;
 	}
 
-	@PostMapping("/produtos/{id}/opiniao")
-	@Transactional
-	public ResponseEntity<Opiniao> adicionaOpiniao(@Valid @RequestBody OpiniaoRequest request, @PathVariable("id") Long id,
+	@PostMapping("/produtos/{id}/perguntas")
+	public ResponseEntity<Pergunta> adicionaPergunta(@PathVariable("id") Long id, @RequestBody @Valid PerguntaRequest request,
 			@RequestHeader HttpHeaders header) {
+		Produto produto = entityManager.find(Produto.class, id);
 		String token = header.getFirst(HttpHeaders.AUTHORIZATION);
 		Usuario usuario = entityManager.find(Usuario.class,
 				tokenManager.getIdUsuario(token.substring(7, token.length())));
 		
-		Produto produto = entityManager.find(Produto.class, id);
-		Opiniao opiniao = request.toModel(produto, usuario);
-		return ResponseEntity.ok(opiniao);
+		Pergunta pergunta = request.toModel(produto, usuario);
+		email.enviaNovaPergunta(pergunta);
+		return ResponseEntity.ok(pergunta);
 	}
 }
