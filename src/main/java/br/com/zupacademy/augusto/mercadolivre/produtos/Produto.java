@@ -188,4 +188,12 @@ public class Produto {
 	public <T> Set<T> mapOpinioes(Function<Opiniao, T> function) {
 		return this.opinioes.stream().map(function).collect(Collectors.toSet());
 	}
+
+	public boolean consomeEstoque(Integer quantidadeDesejada) {
+		if (quantidadeDesejada <= this.quantidadeDisponivel) {
+			this.quantidadeDisponivel -= quantidadeDesejada;
+			return true;
+		}
+		return false;
+	}
 }
