@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import org.springframework.web.util.UriComponentsBuilder;
+
 import br.com.zupacademy.augusto.mercadolivre.produtos.Produto;
 import br.com.zupacademy.augusto.mercadolivre.usuario.Usuario;
 
@@ -49,6 +51,11 @@ public class Compra {
 		this.gatewayCompra = gatewayCompra;
 		this.valorNoMomentoDaCompra = valorNoMomentoDaCompra;
 		this.statusCompra = statusCompra;
+	}
+	
+	public String urlRedirecionamento(
+			UriComponentsBuilder uriComponentsBuilder) {
+		return this.gatewayCompra.criaUrlRetorno(this, uriComponentsBuilder);
 	}
 
 	public Long getId() {

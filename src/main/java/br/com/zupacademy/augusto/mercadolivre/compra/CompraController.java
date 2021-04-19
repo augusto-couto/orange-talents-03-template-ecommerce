@@ -31,6 +31,7 @@ public class CompraController {
 	@Transactional
 	public ResponseEntity<String> efetuaCompra(@Valid @RequestBody CompraRequest compraRequest,
 			@AuthenticationPrincipal Usuario comprador, UriComponentsBuilder uriBuilder) {
+		
 		Produto produtoDesejado = entityManager.find(Produto.class, compraRequest.getIdProdutoDesejado());
 		boolean temEstoque = produtoDesejado.consomeEstoque(compraRequest.getQuantidadeDesejada());
 
@@ -41,25 +42,8 @@ public class CompraController {
 					compraRequest.getGatewayCompra(), produtoDesejado.getValor(), StatusCompra.INICIADA);
 			entityManager.persist(compra);
 
-			switch (compraRequest.getGatewayCompra()) {
-			case pagseguro:
-				String urlRetornoPagseguro = uriBuilder.path("/pagamento-pagseguro/{id}")
-				.buildAndExpand(compra.getId())
-						.toString();
-				return ResponseEntity
-						.ok("pagseguro.com?returnId=" + compra.getId()
-						+ "&redirectUrl=" + urlRetornoPagseguro);
-			case paypal:
-				String urlRetornopaypal = uriBuilder.path("/pagamento-paypal/{id}")
-				.buildAndExpand(compra.getId())
-						.toString();
-				return ResponseEntity.ok("paypal.com?buyerId=" + compra.getId()
-				+ "&redirectUrl" + urlRetornopaypal);
-			default:
-				break;
-			}
+			return ResponseEntity.ok(compra.urlRedirecionamento(uriBuilder));
 		}
-		System.out.println(comprador);
 		return ResponseEntity.badRequest().body("Faltam produtos no estoque");
 	}
 
