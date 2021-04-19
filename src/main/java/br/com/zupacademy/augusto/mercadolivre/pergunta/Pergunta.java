@@ -34,7 +34,12 @@ public class Pergunta {
 	@ManyToOne
 	@NotNull
 	private Usuario usuario;
-	
+		
+	@Deprecated
+	public Pergunta() {
+		super();
+	}
+
 	public Pergunta(@NotBlank String titulo, @NotNull Produto produto, @NotNull Usuario usuario) {
 		super();
 		this.titulo = titulo;
@@ -42,27 +47,15 @@ public class Pergunta {
 		this.usuario = usuario;
 	}
 
-	public Long getId() {
-		return id;
-	}
-
 	public String getTitulo() {
 		return titulo;
 	}
 
-	public LocalDateTime getInstantePergunta() {
-		return instantePergunta;
-	}
-
-	public Produto getProduto() {
-		return produto;
-	}
-	
 	public String getEmailDonoProduto() {
 		return produto.getDono().getUsername();
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
+	public LocalDateTime getInstantePergunta() {
+		return instantePergunta;
 	}
 }

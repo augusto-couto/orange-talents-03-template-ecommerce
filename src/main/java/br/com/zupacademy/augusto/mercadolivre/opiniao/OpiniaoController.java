@@ -38,6 +38,7 @@ public class OpiniaoController {
 		
 		Produto produto = entityManager.find(Produto.class, id);
 		Opiniao opiniao = request.toModel(produto, usuario);
+		entityManager.persist(opiniao);
 		return ResponseEntity.ok(opiniao);
 	}
 }

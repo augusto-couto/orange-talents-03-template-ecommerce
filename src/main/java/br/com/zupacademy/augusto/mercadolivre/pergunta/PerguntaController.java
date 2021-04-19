@@ -1,6 +1,7 @@
 package br.com.zupacademy.augusto.mercadolivre.pergunta;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
@@ -30,7 +31,8 @@ public class PerguntaController {
 	}
 
 	@PostMapping("/produtos/{id}/perguntas")
-	public ResponseEntity<Pergunta> adicionaPergunta(@PathVariable("id") Long id, @RequestBody @Valid PerguntaRequest request,
+	@Transactional
+	public ResponseEntity<PerguntaDetalhesResponse> adicionaPergunta(@PathVariable("id") Long id, @RequestBody @Valid PerguntaRequest request,
 			@RequestHeader HttpHeaders header) {
 		Produto produto = entityManager.find(Produto.class, id);
 		String token = header.getFirst(HttpHeaders.AUTHORIZATION);
@@ -39,6 +41,7 @@ public class PerguntaController {
 		
 		Pergunta pergunta = request.toModel(produto, usuario);
 		email.enviaNovaPergunta(pergunta);
-		return ResponseEntity.ok(pergunta);
+		entityManager.persist(pergunta);
+		return ResponseEntity.ok(new PerguntaDetalhesResponse(pergunta));
 	}
 }

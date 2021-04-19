@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
@@ -25,6 +27,8 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
 
 import br.com.zupacademy.augusto.mercadolivre.categoria.Categoria;
+import br.com.zupacademy.augusto.mercadolivre.opiniao.Opiniao;
+import br.com.zupacademy.augusto.mercadolivre.pergunta.Pergunta;
 import br.com.zupacademy.augusto.mercadolivre.usuario.Usuario;
 
 @Entity
@@ -60,6 +64,13 @@ public class Produto {
 	@NotNull
 	@ManyToOne
 	private Usuario dono;
+	
+	@OneToMany(mappedBy = "produto")
+	@OrderBy("instantePergunta desc")
+	private Set<Pergunta> perguntas = new HashSet<>();
+	
+	@OneToMany(mappedBy = "produto")
+	private Set<Opiniao> opinioes = new HashSet<>();
 	
 	@Deprecated
 	public Produto() {
@@ -130,6 +141,14 @@ public class Produto {
 		return dono;
 	}
 
+	public Set<Pergunta> getPerguntas() {
+		return perguntas;
+	}
+
+	public Set<Opiniao> getOpinioes() {
+		return opinioes;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -164,5 +183,9 @@ public class Produto {
 
 	public boolean belongToUser(Usuario possivelDono) {
 		return this.dono.equals(possivelDono) ;
+	}
+
+	public <T> Set<T> mapOpinioes(Function<Opiniao, T> function) {
+		return this.opinioes.stream().map(function).collect(Collectors.toSet());
 	}
 }

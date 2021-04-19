@@ -37,10 +37,6 @@ public class Opiniao {
 	@ManyToOne
 	Usuario usuario;
 
-	public Long getId() {
-		return id;
-	}
-
 	public int getNota() {
 		return nota;
 	}
@@ -53,12 +49,9 @@ public class Opiniao {
 		return descricao;
 	}
 
-	public Produto getProduto() {
-		return produto;
-	}
-
-	public Usuario getUsuario() {
-		return usuario;
+	@Deprecated
+	public Opiniao() {
+		super();
 	}
 
 	public Opiniao(@Min(1) @Max(5) @NotNull int nota, @NotBlank String titulo,
